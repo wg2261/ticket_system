@@ -1,0 +1,110 @@
+.customer-flights-container {
+  width: 90%;
+  max-width: 1400px;
+  margin: 24px auto;
+  padding: 28px;
+
+  background: #ffffff;
+  border-radius: 26px;
+  border: 4px solid #C7F7E7;
+
+  box-shadow:
+    0 0 18px rgba(199, 247, 231, 0.45),
+    0 0 32px rgba(229, 197, 245, 0.25);
+  text-align: center;
+}
+
+.customer-flights-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 80px;
+  padding-bottom: 20px;
+}
+
+.customer-flights-tabs button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding-bottom: 6px;
+  font-weight: 600;
+  color: #3a3a3a;
+  transition: 0.2s ease;
+}
+
+.customer-flights-tabs button:hover {
+  color: #009688;
+}
+
+.customer-flights-tabs .active {
+  border-bottom: 3px solid #57DEC7;
+  color: #009688;
+}
+
+.customer-flights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.flight-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 22px;
+
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 3px solid #C7F7E7;
+
+  background: #ffffff;
+  box-shadow:
+    0 0 12px rgba(199, 247, 231, 0.35),
+    0 0 18px rgba(229, 197, 245, 0.20);
+}
+
+/* Left block */
+.flight-info-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.flight-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #009688;
+  margin-bottom: 4px;
+}
+
+.flight-detail-line {
+  font-size: 14px;
+  color: #444;
+}
+
+/* Right block */
+.flight-meta {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.time-line,
+.misc-line,
+.purchase-line {
+  font-size: 14px;
+  color: #333;
+}
+
+.purchase-line {
+  margin-top: 6px;
+  color: #777;
+}
+
+/* No flights text */
+.no-flights-msg {
+  text-align: center;
+  font-size: 16px;
+  padding: 20px;
+  color: #777;
+}

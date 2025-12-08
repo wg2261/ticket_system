@@ -1,0 +1,105 @@
+.staff-analytics-page {
+  width: 90%;
+  max-width: 1400px;
+  margin: 24px auto;
+  padding: 28px;
+
+  background: #ffffff;
+  border-radius: 26px;
+  border: 4px solid #C7F7E7;
+
+  box-shadow:
+    0 0 18px rgba(199, 247, 231, 0.45),
+    0 0 32px rgba(229, 197, 245, 0.25);
+}
+
+.staff-analytics-page h2 {
+  margin-bottom: 10px;
+  color: #009688;
+}
+
+.staff-analytics-page h3 {
+  color: #009688;
+  margin-bottom: 20px;
+}
+
+.staff-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 26px;
+  margin-top: 20px;
+}
+
+.staff-card {
+  background: white;
+  padding: 22px;
+  border-radius: 22px;
+  border: 3px solid #C7F7E7;
+
+  box-shadow:
+    0 0 14px rgba(199, 247, 231, 0.45),
+    0 0 20px rgba(229, 197, 245, 0.25);
+}
+
+.staff-card h4 {
+  margin-top: 0;
+  color: #009688;
+}
+
+.staff-card .value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Section spacing */
+.staff-section {
+  margin-top: 40px;
+}
+
+/* Table structure */
+.staff-table {
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 3px solid #C7F7E7;
+}
+
+.staff-table-header,
+.staff-table-row {
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  padding: 14px 18px;
+}
+
+.staff-table-header {
+  background: #E2FFFA;
+  font-weight: bold;
+}
+
+.staff-table-row:nth-child(odd) {
+  background: #fafafa;
+}
+
+.staff-table-row:nth-child(even) {
+  background: #ffffff;
+}
+
+.staff-table-row span {
+  font-size: 16px;
+  color: #333;
+}
+
+/* TWO COLUMN SECTION FOR DESTINATIONS */
+.staff-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+}
+
+.staff-col h4 {
+  margin-bottom: 12px;
+  color: #009688;
+  text-align: center;
+}
+

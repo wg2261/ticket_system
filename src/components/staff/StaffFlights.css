@@ -1,0 +1,314 @@
+/* =====================================================
+   MAIN PAGE WRAPPER (MATCHES FLIGHTS PAGE)
+===================================================== */
+
+.staff-flights-page {
+  width: 100%;
+  padding-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Main container for filters/search */
+.staff-flight-container,
+.staff-results-box {
+  width: 90%;
+  max-width: 1400px;
+
+  margin: 24px auto;
+  padding: 28px;
+
+  background: #ffffff;
+  border-radius: 26px;
+  border: 4px solid #C7F7E7;
+
+  box-shadow:
+    0 0 18px rgba(199, 247, 231, 0.45),
+    0 0 32px rgba(229, 197, 245, 0.25);
+}
+
+/* =====================================================
+   TABS (MATCHING Flights.css)
+===================================================== */
+
+.staff-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 20px;
+}
+
+.staff-tabs button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 6px 4px;
+  position: relative;
+}
+
+.staff-active-tab::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #A68DC8;
+  border-radius: 2px;
+}
+
+/* =====================================================
+   FILTER CONTENT AREA
+===================================================== */
+
+.staff-filter-content {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 18px;
+  margin-top: 16px;
+}
+
+.flex-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 260px;
+}
+
+.input-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: black;
+  margin-left: 6px;
+}
+
+.input-box {
+  background: #fff;
+  border: 3px solid #E5C5F5;
+  border-radius: 14px;
+  padding: 12px 16px;
+  min-width: 230px;
+  transition: 0.25s ease;
+}
+
+.input-box input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  font-size: 16px;
+  outline: none;
+}
+
+.input-box:focus-within {
+  border-color: #C7F7E7;
+  background: #F4FFFB;
+  box-shadow: 0 0 6px #C7F7E760;
+}
+
+/* SWAP BUTTON (same as Flights.css) */
+.swap-btn {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 50%;
+  border: 3px solid #C7F7E7;
+  background: white;
+  cursor: pointer;
+
+  font-size: 20px;
+  font-weight: bold;
+  color: #7c65b1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition: 0.2s ease;
+}
+
+.swap-btn:hover {
+  background: #C7F7E7;
+}
+
+/* SEARCH BUTTON */
+.search-btn {
+  height: 50px;
+  padding: 0 34px;
+
+  background: #A68DC8;
+  color: white;
+  border: none;
+  border-radius: 14px;
+
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+
+  transition: 0.25s ease;
+  align-self: flex-end;
+}
+
+.search-btn:hover {
+  background: #7c65b1;
+}
+
+.search-btn:disabled {
+  background: #cfcfcf !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* =====================================================
+   RESULTS BOX (MATCHES Flights.css)
+===================================================== */
+
+.staff-results-box {
+  margin-top: 24px;
+}
+
+.no-results {
+  text-align: center;
+  font-size: 18px;
+  padding: 20px;
+  color: #777;
+}
+
+/* =====================================================
+   FLIGHT ROW (MATCHES Flights.css EXACTLY)
+===================================================== */
+
+.flight-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 14px 10px;
+  margin-bottom: 8px;
+
+  border-bottom: 2px solid #EFEFEF;
+}
+
+.flight-row:last-child {
+  border-bottom: none;
+}
+
+.flight-left {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.flight-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.airline-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* COLUMNS OF TIMES AND AIRPORT CODES */
+.flight-columns {
+  display: flex;
+  gap: 40px;
+}
+
+.flight-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.time-main {
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+}
+
+.airport-code {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+/* =====================================================
+   STATUS BADGE (same as Flights.css)
+===================================================== */
+
+.in-progress-badge {
+  background: #ffce73;
+  color: #6a4600;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+/* =====================================================
+   RIGHT SIDE BUTTONS
+===================================================== */
+
+.flight-right {
+  text-align: right;
+}
+
+.select-btn {
+  padding: 12px 22px;
+  border-radius: 10px;
+  background: #A68DC8;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.select-btn:hover {
+  background: #7c65b1;
+}
+
+/* =====================================================
+   PASSENGER LIST TABLE
+===================================================== */
+
+.passenger-table {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+}
+
+.passenger-table th,
+.passenger-table td {
+  padding: 14px 10px;
+  border-bottom: 2px solid #EFEFEF;
+  font-size: 16px;
+}
+
+.passenger-table th {
+  background: #F4FFFB;
+  font-weight: 700;
+  color: #009688;
+}
+
+.flight-date {
+  font-size: 13px;
+  color: #555;
+  margin-top: 4px;
+}
+
+.airplane-id {
+  font-size: 13px;
+  margin-top: 2px;
+  color: #777;
+}
