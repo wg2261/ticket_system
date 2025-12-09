@@ -139,14 +139,14 @@ def staff_dashboard(email: str):
         cursor.execute(
             """
             SELECT 
-                DATE_FORMAT(P.purchase_date, '%%Y-%%m') AS month,
+                DATE_FORMAT(P.purchase_date, '%b') AS month,
                 COUNT(*) AS tickets
-            FROM purchase P
+            FROM purchase P 
             JOIN ticket T ON P.ticket_id = T.ticket_id
-            JOIN flight F ON T.flight_num = F.flight_num
+            JOIN flight F ON T.flight_num = F.flight_num 
             WHERE F.airline_name=%s
-            GROUP BY month
-            ORDER BY month ASC
+            GROUP BY YEAR(P.purchase_date), MONTH(P.purchase_date)
+            ORDER BY YEAR(P.purchase_date), MONTH(P.purchase_date) ASC
             """,
             (airline,)
         )
@@ -325,23 +325,25 @@ def staff_analytics(email: str):
         total_flights = cursor.fetchone()["total_flights"]
 
         # ----------------------------------------------------
-        # TICKETS SOLD PER MONTH  (MONTH NAME ONLY)
+        # TICKETS SOLD PER MONTH
         # ----------------------------------------------------
+        end_date = datetime.today()
+        start_date = end_date - timedelta(days=365)
         cursor.execute(
             """
             SELECT 
-                DATE_FORMAT(P.purchase_date, '%%b') AS month,
+                DATE_FORMAT(P.purchase_date, '%b') AS month,
                 COUNT(*) AS tickets
             FROM purchase P
             JOIN ticket T ON P.ticket_id=T.ticket_id
-            JOIN flight F ON T.flight_num=F.flight_num
-            WHERE F.airline_name=%s
+            WHERE T.airline_name=%s
+              AND P.purchase_date BETWEEN %s AND %s
             GROUP BY month
-            ORDER BY MIN(P.purchase_date)
+            ORDER BY month ASC;
             """,
-            (airline,)
+            (airline,start_date, end_date)
         )
-        ticket_monthly = cursor.fetchall() or []
+        ticket_monthly = cursor.fetchall()
 
         # ----------------------------------------------------
         # FREQUENT CUSTOMER (past year)
@@ -353,8 +355,7 @@ def staff_analytics(email: str):
                 COUNT(*) AS flights
             FROM purchase P
             JOIN ticket T ON P.ticket_id=T.ticket_id
-            JOIN flight F ON T.flight_num=F.flight_num
-            WHERE F.airline_name=%s
+            WHERE T.airline_name=%s
               AND P.purchase_date >= %s
             GROUP BY P.customer_email
             ORDER BY flights DESC
@@ -388,18 +389,16 @@ def staff_analytics(email: str):
         }
 
         # ----------------------------------------------------
-        # TOP AGENTS — LAST MONTH (tickets + commission)
+        # TOP AGENTS — LAST MONTH (tickets)
         # ----------------------------------------------------
         cursor.execute(
             """
             SELECT 
                 P.agent_email,
-                COUNT(*) AS sold,
-                SUM(T.price_charged * 0.10) AS commission
+                COUNT(*) AS sold
             FROM purchase P
             JOIN ticket T ON P.ticket_id=T.ticket_id
-            JOIN flight F ON T.flight_num=F.flight_num
-            WHERE F.airline_name=%s
+            WHERE T.airline_name=%s
               AND P.agent_email IS NOT NULL
               AND P.purchase_date >= %s
             GROUP BY P.agent_email
@@ -408,21 +407,40 @@ def staff_analytics(email: str):
             """,
             (airline, last_month)
         )
-        top_agents_month = cursor.fetchall() or []
+        top_agents_month_tickets = cursor.fetchall() or []
 
         # ----------------------------------------------------
-        # TOP AGENTS — LAST YEAR (tickets + commission)
+        # TOP AGENTS — LAST MONTH (commission)
         # ----------------------------------------------------
         cursor.execute(
             """
             SELECT 
                 P.agent_email,
-                COUNT(*) AS sold,
                 SUM(T.price_charged * 0.10) AS commission
             FROM purchase P
             JOIN ticket T ON P.ticket_id=T.ticket_id
-            JOIN flight F ON T.flight_num=F.flight_num
-            WHERE F.airline_name=%s
+            WHERE T.airline_name=%s
+              AND P.agent_email IS NOT NULL
+              AND P.purchase_date >= %s
+            GROUP BY P.agent_email
+            ORDER BY commission DESC
+            LIMIT 5
+            """,
+            (airline, last_month)
+        )
+        top_agents_month_comm = cursor.fetchall() or []
+
+        # ----------------------------------------------------
+        # TOP AGENTS — LAST YEAR (ticket)
+        # ----------------------------------------------------
+        cursor.execute(
+            """
+            SELECT 
+                P.agent_email,
+                COUNT(*) AS sold
+            FROM purchase P
+            JOIN ticket T ON P.ticket_id=T.ticket_id
+            WHERE T.airline_name=%s
               AND P.agent_email IS NOT NULL
               AND P.purchase_date >= %s
             GROUP BY P.agent_email
@@ -431,7 +449,28 @@ def staff_analytics(email: str):
             """,
             (airline, last_year)
         )
-        top_agents_year = cursor.fetchall() or []
+        top_agents_year_tickets = cursor.fetchall() or []
+
+        # ----------------------------------------------------
+        # TOP AGENTS — LAST YEAR (commission)
+        # ----------------------------------------------------
+        cursor.execute(
+            """
+            SELECT 
+                P.agent_email,
+                SUM(T.price_charged * 0.10) AS commission
+            FROM purchase P
+            JOIN ticket T ON P.ticket_id=T.ticket_id
+            WHERE T.airline_name=%s
+              AND P.agent_email IS NOT NULL
+              AND P.purchase_date >= %s
+            GROUP BY P.agent_email
+            ORDER BY commission DESC
+            LIMIT 5
+            """,
+            (airline, last_year)
+        )
+        top_agents_year_comm = cursor.fetchall() or []
 
         # ----------------------------------------------------
         # TOP DESTINATIONS — LAST 3 MONTHS (CITY)
@@ -443,6 +482,7 @@ def staff_analytics(email: str):
                 COUNT(*) AS count
             FROM ticket T
             JOIN flight F ON T.flight_num=F.flight_num
+                AND T.airline_name = F.airline_name
             JOIN purchase P ON T.ticket_id=P.ticket_id
             JOIN airport A2 ON F.arrival_airport = A2.name
             WHERE F.airline_name=%s
@@ -487,8 +527,14 @@ def staff_analytics(email: str):
             "ticket_monthly": ticket_monthly,
             "freq_customer": freq_customer,
             "status_stats": status_stats,
-            "top_agents_month": top_agents_month,
-            "top_agents_year": top_agents_year,
+            "top_agents_month": {
+                "tickets": top_agents_month_tickets,
+                "commission": top_agents_month_comm
+            },
+            "top_agents_year": {
+                "tickets": top_agents_year_tickets,
+                "commission": top_agents_year_comm
+            },
             "top_dest_3mo": top_dest_3mo,
             "top_dest_year": top_dest_year
         }
@@ -496,7 +542,6 @@ def staff_analytics(email: str):
     finally:
         cursor.close()
         conn.close()
-
 
 # Add airport
 @router.post("/add_airport")

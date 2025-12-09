@@ -45,6 +45,21 @@ function App() {
     }
   }, [userInfo]);
 
+  function protect(requiredRole, Component) {
+    if (!userInfo || !userInfo.role) {
+      if (userInfo && userInfo.role === "staff") {navigate("/staff/flights");}
+      else { navigate("/flights");}
+      return null;
+    }
+
+    if (userInfo.role !== requiredRole) {
+      navigate(`/${userInfo.role}`); // redirect to role dashboard
+      return null;
+    }
+
+    return <Component userInfo={userInfo} />;
+  }
+
 
   // PAGE NAVIGATION --------------------
   const [page, setPage] = useState(window.location.pathname);
@@ -110,23 +125,37 @@ function App() {
     }
 
     switch (page) {
-      case "/customer": return <Customer userInfo={userInfo} />;
-      case "/customer/flights": return <CustomerFlights userInfo={userInfo} />;
-      case "/customer/spending": return <Spending userInfo={userInfo} />;
+      // CUSTOMER pages
+      case "/customer":
+        return protect("customer", Customer);
+      case "/customer/flights":
+        return protect("customer", CustomerFlights);
+      case "/customer/spending":
+        return protect("customer", Spending);
 
-      case "/agent": return <Agent userInfo={userInfo} />;
-      case "/agent/flights": return <AgentFlights userInfo={userInfo} />;
-      case "/agent/analytics": return <AgentAnalytics userInfo={userInfo} />;
+      // AGENT pages
+      case "/agent":
+        return protect("agent", Agent);
+      case "/agent/flights":
+        return protect("agent", AgentFlights);
+      case "/agent/analytics":
+        return protect("agent", AgentAnalytics);
 
-      case "/staff": return <Staff userInfo={userInfo} />;
-      case "/staff/flights": return <StaffFlights userInfo={userInfo} />;
-      case "/staff/analytics": return <StaffAnalytics userInfo={userInfo} />;
-      case "/staff/management": return <Management userInfo={userInfo} />;
+      // STAFF pages
+      case "/staff":
+        return protect("staff", Staff);
+      case "/staff/flights":
+        return protect("staff", StaffFlights);
+      case "/staff/analytics":
+        return protect("staff", StaffAnalytics);
+      case "/staff/management":
+        return protect("staff", Management);
 
       default:
         navigate("/flights");
         return null;
     }
+
   };
 
   return (

@@ -84,26 +84,32 @@ export default function StaffAnalytics({ userInfo }) {
 
         <div className="staff-table">
           <div className="staff-table-header">
-            <span>Month (YYYY-MM)</span>
+            <span>Month</span>
             <span>Tickets Sold</span>
           </div>
 
-          {(data.ticket_monthly || []).map((row, idx) => (
-            <div key={idx} className="staff-table-row">
-              <span>{row.month}</span>
-              <span>{row.tickets}</span>
-            </div>
-          ))}
+          {(data.ticket_monthly || []).map((row, idx) => {
+            const monthName = new Date(row.month + "-01").toLocaleString("en-US", {
+              month: "short"
+            });
+
+            return (
+              <div key={idx} className="staff-table-row">
+                <span>{monthName}</span>
+                <span>{row.tickets}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* TOP AGENTS — TICKETS */}
+      {/* TOP AGENTS — LAST MONTH */}
       <div className="staff-section">
-        <h3>Top Booking Agents — Tickets Sold</h3>
+        <h3>Top Booking Agents — Last Month</h3>
 
         <div className="staff-2col">
           <div className="staff-col">
-            <h4>Last Month</h4>
+            <h4>Tickets Sold</h4>
 
             <div className="staff-table">
               <div className="staff-table-header">
@@ -111,7 +117,7 @@ export default function StaffAnalytics({ userInfo }) {
                 <span>Tickets</span>
               </div>
 
-              {(data.top_agents_month || []).map((a, idx) => (
+              {(data.top_agents_month?.tickets || []).map((a, idx) => (
                 <div key={idx} className="staff-table-row">
                   <span>{a.agent_email}</span>
                   <span>{a.sold}</span>
@@ -121,18 +127,18 @@ export default function StaffAnalytics({ userInfo }) {
           </div>
 
           <div className="staff-col">
-            <h4>Last Year</h4>
+            <h4>Commission Earned</h4>
 
             <div className="staff-table">
               <div className="staff-table-header">
                 <span>Agent Email</span>
-                <span>Tickets</span>
+                <span>Commission</span>
               </div>
 
-              {(data.top_agents_year || []).map((a, idx) => (
+              {(data.top_agents_month?.commission || []).map((a, idx) => (
                 <div key={idx} className="staff-table-row">
                   <span>{a.agent_email}</span>
-                  <span>{a.sold}</span>
+                  <span>${a.commission?.toFixed(2)}</span>
                 </div>
               ))}
             </div>
@@ -140,42 +146,42 @@ export default function StaffAnalytics({ userInfo }) {
         </div>
       </div>
 
-      {/* TOP AGENTS — COMMISSION */}
+      {/* TOP AGENTS — LAST YEAR */}
       <div className="staff-section">
-        <h3>Top Booking Agents — Commission Earned</h3>
+        <h3>Top Booking Agents — Last Year</h3>
 
         <div className="staff-2col">
           <div className="staff-col">
-            <h4>Last Month</h4>
+            <h4>Tickets Sold</h4>
 
             <div className="staff-table">
               <div className="staff-table-header">
                 <span>Agent Email</span>
-                <span>Commission ($)</span>
+                <span>Tickets</span>
               </div>
 
-              {(data.top_agents_comm_month || []).map((a, idx) => (
+              {(data.top_agents_year?.tickets || []).map((a, idx) => (
                 <div key={idx} className="staff-table-row">
                   <span>{a.agent_email}</span>
-                  <span>{a.commission}</span>
+                  <span>{a.sold}</span>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="staff-col">
-            <h4>Last Year</h4>
+            <h4>Commission Earned</h4>
 
             <div className="staff-table">
               <div className="staff-table-header">
                 <span>Agent Email</span>
-                <span>Commission ($)</span>
+                <span>Commission</span>
               </div>
 
-              {(data.top_agents_comm_year || []).map((a, idx) => (
+              {(data.top_agents_year?.commission || []).map((a, idx) => (
                 <div key={idx} className="staff-table-row">
                   <span>{a.agent_email}</span>
-                  <span>{a.commission}</span>
+                  <span>${a.commission?.toFixed(2)}</span>
                 </div>
               ))}
             </div>
