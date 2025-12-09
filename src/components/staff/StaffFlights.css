@@ -2,7 +2,7 @@
    MAIN PAGE WRAPPER (MATCHES FLIGHTS PAGE)
 ===================================================== */
 
-.staff-flights-page {
+.flights-page {
   width: 100%;
   padding-bottom: 60px;
   display: flex;
@@ -10,9 +10,13 @@
   align-items: center;
 }
 
+.flights-page h2 {
+  color: #009688;
+}
+
 /* Main container for filters/search */
-.staff-flight-container,
-.staff-results-box {
+.flight-container,
+.results-box {
   width: 90%;
   max-width: 1400px;
 
@@ -32,14 +36,14 @@
    TABS (MATCHING Flights.css)
 ===================================================== */
 
-.staff-tabs {
+.tabs {
   display: flex;
   justify-content: center;
   gap: 40px;
   margin-bottom: 20px;
 }
 
-.staff-tabs button {
+.tabs button {
   background: none;
   border: none;
   font-size: 24px;
@@ -49,7 +53,7 @@
   position: relative;
 }
 
-.staff-active-tab::after {
+.active-tab::after {
   content: "";
   position: absolute;
   bottom: -4px;
@@ -64,7 +68,7 @@
    FILTER CONTENT AREA
 ===================================================== */
 
-.staff-filter-content {
+.filter-content {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
@@ -168,7 +172,7 @@
    RESULTS BOX (MATCHES Flights.css)
 ===================================================== */
 
-.staff-results-box {
+.results-box {
   margin-top: 24px;
 }
 
