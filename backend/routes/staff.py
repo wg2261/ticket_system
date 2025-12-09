@@ -1080,3 +1080,96 @@ def get_seat_classes(airline: str, airplane_id: str):
         cursor.close()
         conn.close()
 
+# Customer history
+@router.get("/customer-history/{staff_email}/{customer_email}")
+def staff_customer_history(staff_email: str, customer_email: str):
+    """
+    Staff lookup of a specific customer's flight history
+    for the staff member's airline only.
+    """
+
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        # -----------------------------------------
+        # 1️⃣ Validate staff & get their airline
+        # -----------------------------------------
+        cursor.execute(
+            "SELECT airline_name FROM airline_staff WHERE email=%s",
+            (staff_email,)
+        )
+        staff = cursor.fetchone()
+        if not staff:
+            raise HTTPException(status_code=403, detail="Staff account not found.")
+
+        staff_airline = staff["airline_name"]
+
+        # -----------------------------------------
+        # 2️⃣ Validate customer exists
+        # -----------------------------------------
+        cursor.execute(
+            "SELECT 1 FROM customer WHERE email=%s",
+            (customer_email,)
+        )
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail="Customer not found.")
+
+        now = datetime.now()
+
+        # -----------------------------------------
+        # 3️⃣ Get ALL flights for this customer
+        #     under THIS staff's airline only
+        # -----------------------------------------
+        cursor.execute(
+            """
+            SELECT 
+                F.flight_num,
+                F.airline_name,
+                F.departure_airport,
+                F.arrival_airport,
+                F.departure_time,
+                F.arrival_time,
+                F.status,
+                P.purchase_date,
+                T.ticket_id,
+                T.seat_class,
+                T.price_charged
+            FROM purchase P
+            JOIN ticket T 
+                ON P.ticket_id = T.ticket_id
+            JOIN flight F 
+                ON T.flight_num = F.flight_num
+               AND T.airline_name = F.airline_name
+            WHERE P.customer_email = %s
+              AND F.airline_name = %s
+            ORDER BY F.departure_time DESC
+            """,
+            (customer_email, staff_airline)
+        )
+        all_flights = cursor.fetchall() or []
+
+        # -----------------------------------------
+        # 4️⃣ Split into upcoming & past in Python
+        # -----------------------------------------
+        upcoming = []
+        past = []
+
+        for row in all_flights:
+            # row["departure_time"] is a datetime from mysql connector
+            if row["departure_time"] >= now:
+                upcoming.append(row)
+            else:
+                past.append(row)
+
+        return {
+            "staff_email": staff_email,
+            "airline": staff_airline,
+            "customer_email": customer_email,
+            "upcoming": upcoming,
+            "past": past,
+        }
+
+    finally:
+        cursor.close()
+        conn.close()

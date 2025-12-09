@@ -67,29 +67,6 @@ VALUES
 ('MU587', 'China Eastern Airlines', 'MU587', 'PVG', 'JFK',
  '2025-11-11 11:30:00', '2025-11-11 13:25:00', 'delayed', 7165.00);
 
-
--- At least two customers and one booking agent.
-INSERT INTO booking_agent (email, password)
-VALUES
-('barbie@gmail.com', 'strongWorkPass'),
-('ken@gmail.com', 'VeryStrongWorkPass');
-
-INSERT INTO INSERT INTO agent_airline_authorization (agent_email, airline_name)
-VALUES
-('barbie@gmail.com', 'Spring Airlines'),
-('barbie@gmail.com', 'China Eastern Airlines'),
-('ken@gmail.com', 'Air China');
-
-
-INSERT INTO customer (
-    email, name, password, building_number, street, city, state,
-    phone_number, passport_number, passport_expiration_date, passport_country, date_of_birth)
-VALUES
-('bobby@gmail.com', 'Bob Bob', 'VeryStrongPassword', '80', 'Lafayette St',
- 'New York', 'NY', '7180000001', 'P2234567', '2033-11-22', 'USA', '1992-06-22'),
-('johndoe@gmail.com', 'John Doe', 'strongPassword', '3', '533 Jiming Road',
- 'Shanghai', 'SH', '13600000001', 'P1234567', '2032-06-21', 'China', '1994-06-21');
-
 -- Several tickets, including at least one purchased through a booking agent
 INSERT INTO ticket (ticket_id, seat_class, airplane_id, flight_num, airline_name, price_charged)
 VALUES
@@ -102,18 +79,3 @@ VALUES
 (1010, 'Economy', 'MU587', 'MU587', 'China Eastern Airlines', 7165.00),
 (1011, 'Business', 'MU587', 'MU587', 'China Eastern Airlines', 31925.50),
 (1012, 'First', 'MU587', 'MU587', 'China Eastern Airlines', 80247.00);
-
-
-INSERT INTO purchase (ticket_id, customer_email, agent_email, purchase_date)
-VALUES
-(1001, 'johndoe@gmail.com', NULL, '2025-11-25'),
-(1002, 'bobby@gmail.com', 'barbie@gmail.com', '2025-11-26'),
-(1004, 'johndoe@gmail.com', NULL, '2025-11-27'),
-(1007, 'bobby@gmail.com', NULL, '2025-11-28'),
-(1010, 'johndoe@gmail.com', 'ken@gmail.com', '2025-11-01');
-
-INSERT INTO airline_staff (email, password, first_name, last_name, date_of_birth, airline_name, permission)
-VALUES
-('delta_admin', 'pass123', 'Alice', 'Tan', '1980-02-14', 'Jetstar Japan', 'admin'),
-('spring_operator', 'pass456', 'Hiro', 'Sato', '1990-11-03', 'Spring Airlines', 'operator'),
-('ce_both', 'pass789', 'Li', 'Wei', '1985-07-21', 'China Eastern Airlines', 'both');

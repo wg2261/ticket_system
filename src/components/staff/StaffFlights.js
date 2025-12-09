@@ -19,7 +19,10 @@ export default function StaffFlights({ userInfo, navigate }) {
 
   // ===== CUSTOMER LOOKUP =====
   const [custEmail, setCustEmail] = useState("");
-  const [custFlights, setCustFlights] = useState([]);
+  const [custFlights, setCustFlights] = useState({
+    upcoming: [],
+    past: []
+  });
 
   // -------------------------
   // LOAD STAFF FLIGHTS
@@ -55,17 +58,28 @@ export default function StaffFlights({ userInfo, navigate }) {
   const lookupHistory = async () => {
     if (!custEmail.trim()) return;
 
-    setCustFlights([]);
+    setCustFlights({
+      upcoming: [],
+      past: []
+    });
 
     try {
       const res = await axios.get(
         `http://localhost:8080/staff/customer-history/${encodeURIComponent(email)}/${encodeURIComponent(custEmail)}`
       );
 
-      setCustFlights(res.data.history || []);
+      setCustFlights({
+        upcoming: res.data.upcoming || [],
+        past: res.data.past || [],
+        customer_email: res.data.customer_email,
+        airline: res.data.airline
+      });
     } catch (err) {
       console.error(err);
-      setCustFlights([]);
+      setCustFlights({
+        upcoming: [],
+        past: [],
+      });
     }
   };
 
@@ -240,54 +254,126 @@ export default function StaffFlights({ userInfo, navigate }) {
       {/* ===========================
           RESULTS — CUSTOMER LOOKUP (TAB 2)
       =========================== */}
-      {tab === "customer" && custFlights.length > 0 && (
+      {custFlights && (custFlights.upcoming.length > 0 || custFlights.past.length > 0) && (
         <div className="results-box">
-          {custFlights.map((f, i) => (
-            <div key={i} className="flight-row">
-              <div className="flight-left">
-                <div className="flight-info">
-                  <h3 className="airline-name">{airline} — {f.flight_num}</h3>
 
-                  <div className="flight-columns">
-                    <div className="flight-col">
-                      <div className="time-main">
-                        {new Date(f.departure_time).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+          {/* UPCOMING */}
+          {custFlights.upcoming.length > 0 && (
+            <>
+              <h3 className="section-title">Upcoming Flights</h3>
+              <div className="results-box">
+                {custFlights.upcoming.map((f, i) => (
+                  <div key={i} className="flight-row">
+
+                    <div className="flight-left">
+                      <div className="flight-info">
+                        <h3 className="airline-name">
+                          {f.airline_name} — {f.flight_num}
+                        </h3>
+
+                        <div className="flight-columns">
+                          <div className="flight-col">
+                            <div className="time-main">
+                              {new Date(f.departure_time).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
+                            <div className="airport-code">{f.departure_airport}</div>
+                          </div>
+
+                          <div className="flight-col">
+                            <div className="time-main">
+                              {new Date(f.arrival_time).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
+
+                            <div className="airport-code">{f.arrival_airport}</div>
+
+                            <div className="flight-date">
+                              {new Date(f.arrival_time).toLocaleDateString([], {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </div>
+
+                            {f.airplane_id && (
+                              <div className="airplane-id">Plane: {f.airplane_id}</div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="in-progress-badge">{f.status}</div>
                       </div>
-                      <div className="airport-code">{f.departure_airport}</div>
                     </div>
 
-                    <div className="flight-col">
-                      <div className="time-main">
-                        {new Date(f.arrival_time).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </div>
-
-                      <div className="airport-code">{f.arrival_airport}</div>
-
-                      <div className="flight-date">
-                        {new Date(f.arrival_time).toLocaleDateString([], {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
-                      </div>
-
-                      <div className="airplane-id">Plane: {f.airplane_id}</div>
-                    </div>
-
-                    </div>
-
-                    <div className="in-progress-badge">{f.status}</div>
-
-                </div>
+                  </div>
+                ))}
               </div>
-            </div>
-          ))}
+            </>
+          )}
+
+          {/* PAST */}
+          {custFlights.past.length > 0 && (
+            <>
+              <h3 className="section-title">Past Flights</h3>
+              <div className="results-box">
+                {custFlights.past.map((f, i) => (
+                  <div key={i} className="flight-row">
+
+                    <div className="flight-left">
+                      <div className="flight-info">
+                        <h3 className="airline-name">
+                          {f.airline_name} — {f.flight_num}
+                        </h3>
+
+                        <div className="flight-columns">
+                          <div className="flight-col">
+                            <div className="time-main">
+                              {new Date(f.departure_time).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
+                            <div className="airport-code">{f.departure_airport}</div>
+                          </div>
+
+                          <div className="flight-col">
+                            <div className="time-main">
+                              {new Date(f.arrival_time).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
+
+                            <div className="airport-code">{f.arrival_airport}</div>
+
+                            <div className="flight-date">
+                              {new Date(f.arrival_time).toLocaleDateString([], {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </div>
+
+                            {f.airplane_id && (
+                              <div className="airplane-id">Plane: {f.airplane_id}</div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="in-progress-badge">{f.status}</div>
+                      </div>
+                    </div>
+
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>
